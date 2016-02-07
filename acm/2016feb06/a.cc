@@ -3,23 +3,19 @@
 
 using namespace std;
 
-int n,k;
+long long n,k,ans,p1,p2;
 string s;
-int p1, p2, lef, rig;
-long long ans;
-
-int get1(int index) {
-    for(;index<n;index++) {
-        if(s[index]=='1') {
-            break;
-        }
+int arr[1000005];
+long long summ(long long x) {
+    x++;
+    if(x%2==0) {
+        return (x/2)*(x-1);
+    } else {
+        return ((x-1)/2)*x;
     }
-    return index;
 }
-
-int main(void) {
+int main (void) {
     int t; cin >> t;
-    
     while(t--) {
         cin >> n >> k;
         cin >> s;
@@ -32,59 +28,42 @@ int main(void) {
             cout << ans << endl;
             continue;
         }
-        int idx=get1(0);
-        // for(;idx<n;idx++) {
-        //     if(s[idx]=='1')
-        //         break;
-        // }
-        lef = idx+1;
-        p1 = idx;
-        count = 1;
-        if(count < k) {
-            idx++;
-        }
-        for(;idx<n;idx++) {
-            if(count >= k) break;
-            if(s[idx]=='1') {
-                count++;
-                if(count >= k) break;
+        
+        int n2 = 1;
+        arr[0] = -1;
+        for(int i=0; i<n; i++) {
+            if(s[i] == '1') {
+                arr[n2++] = i;
             }
         }
-        p2 = idx;
-        // idx++;
-        idx = get1(idx+1);
-        // for(;idx<n;idx++) {
-        //     if(s[idx]=='1') break;
+        arr[n2] = n;
+        n2++;
+        if(k==0) {
+            // cout << n2 << endl;
+            if(n2==2) {
+                // cout << "0" << endl;
+                cout << summ(n) << endl;
+            } else {
+                for(int i=1; i<n2-1; i++) {
+                    ans += summ(arr[i]-arr[i-1]-1);
+                }
+                ans += summ(arr[n2-1]-arr[n2-2]-1);
+                // cout << "1" << endl;
+                cout << ans << endl;
+            }
+            continue;
+        }
+        // for(int i=0; i<n2; i++) {
+        //     cout << arr[i] << " ";
         // }
-        rig = idx - p2;
-        // cout << lef << " " << rig << " " << p1 << " " << p2 << endl;
-        ans += lef*rig;
-        // cout << idx << endl;
-        while(true) {
-            // cout << idx << endl;
-            if(idx >= n) break;
-            p2 = idx;
-            idx=get1(idx+1);
-            // idx++;
-            // for(;idx<n;idx++) {
-            //     if(s[idx]=='1')
-            //         break;
-            // }
-            rig = idx - p2;
-            int idx2=get1(p1+1);
-            // int idx2 = p1+1;
-            // for(;idx2<n;idx2++) {
-            //     if(s[idx2]=='1') {
-            //         break;
-            //     }
-            // }
-            lef = idx2 - p1;
-            p1 = idx2;
-            // cout << lef << " " << rig << " " << p1 << " " << p2 << endl;
-            ans += lef*rig;
+        // cout << endl;
+        p1=1;
+        p2=p1+k-1;
+        for( ; p2<n2-1; p2++,p1++ ) {
+            ans += (arr[p1] - arr[p1-1]) * (arr[p2+1]-arr[p2]);
         }
         cout << ans << endl;
+        
     }
-    
     return 0;
 }
